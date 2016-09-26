@@ -56,3 +56,8 @@ def disclaimer(request):
     return {
         'feedback_form_url': request.registry.settings['feedback_form_url']
     }
+
+
+@view_config(route_name='data_map', renderer='templates/data_map.jinja2')
+def data_map(request):
+    return {}

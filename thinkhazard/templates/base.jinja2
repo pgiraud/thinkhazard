@@ -10,9 +10,11 @@
 {% if debug %}
     <link href="{{'thinkhazard:static/build/common.css'|static_url}}" rel="stylesheet">
     <link href="{{('thinkhazard:static/build/%s.css' % self.name())|static_url}}" rel="stylesheet">
+    <link href="{{('%s/leaflet/dist/leaflet.css' % node_modules)|static_url}}" rel="stylesheet">
 {% else %}
     <link href="{{'thinkhazard:static/build/common.min.css'|static_url}}" rel="stylesheet">
     <link href="{{('thinkhazard:static/build/%s.min.css' % self.name())|static_url}}" rel="stylesheet">
+    <link href="{{('%s/leaflet/dist/leaflet.css' % node_modules)|static_url}}" rel="stylesheet">
 {% endif %}
   </head>
   <body class="{{'preview' if request.registry['settings'].appname == 'admin' }}">
@@ -24,10 +26,12 @@
     <script src="{{('%s/jquery/dist/jquery.js' % node_modules)|static_url}}"></script>
     <script src="{{('%s/bootstrap/dist/js/bootstrap.js' % node_modules)|static_url}}"></script>
     <script src="{{('%s/typeahead.js/dist/typeahead.bundle.js' % node_modules)|static_url}}"></script>
+    <script src="{{('%s/leaflet/dist/leaflet-src.js' % node_modules)|static_url}}"></script>
 {% else %}
     <script src="{{('%s/jquery/dist/jquery.min.js' % node_modules)|static_url}}"></script>
     <script src="{{('%s/bootstrap/dist/js/bootstrap.min.js' % node_modules)|static_url}}"></script>
     <script src="{{('%s/typeahead.js/dist/typeahead.bundle.min.js' % node_modules)|static_url}}"></script>
+    <script src="{{('%s/leaflet/dist/leaflet.js' % node_modules)|static_url}}"></script>
 {% endif %}
     <script>
       var app = {};
@@ -61,6 +65,7 @@
     {% endblock scripts %}
     <script src="{{('thinkhazard:static/js/%s.js' % self.name())|static_url}}"></script>
     <script src="{{'thinkhazard:static/js/search.js'|static_url}}"></script>
+    <script src="{{'thinkhazard:static/js/data_map.js'|static_url}}"></script>
     {% if request.registry['settings'].appname == 'admin' %}
     <div class="ribbon"><span>PREVIEW</span></div>
     {% endif %}

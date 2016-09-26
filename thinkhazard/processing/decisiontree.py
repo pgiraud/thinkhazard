@@ -25,6 +25,22 @@ from ..models import (
 
 from . import BaseProcessor
 
+from sqlalchemy.sql import func
+from geoalchemy2.shape import to_shape
+from sqlalchemy.orm import contains_eager, joinedload
+
+import os
+import json
+
+from ..models import (
+    DBSession,
+    AdministrativeDivision,
+    AdminLevelType,
+    HazardCategoryAdministrativeDivisionAssociation,
+    HazardCategory,
+    HazardType,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +66,51 @@ class DecisionMaker(BaseProcessor):
             trans.commit()
         except:
             trans.rollback()
+
+        self.generate_data_map()
+
+
+    def generate_data_map(self):
+        simplify = func.ST_AsGeoJSON(
+            func.ST_Simplify(AdministrativeDivision.geom, 0.04), 2)
+
+        divisions = DBSession.query(AdministrativeDivision) \
+            .add_columns(simplify) \
+            .join(AdminLevelType) \
+            .filter(AdminLevelType.mnemonic == u'COU') \
+            .order_by(AdministrativeDivision.name) \
+            .options(joinedload(AdministrativeDivision.hazardcategories))
+
+        content = {
+            'type': 'FeatureCollection',
+            'features': [{
+                'type': 'Feature',
+                'geometry': json.loads(geom_simplified),
+                'properties': {
+                    'name': division.name,
+                    'code': division.code,
+                    'hazard_categories': {
+                        HcAdAss.hazardcategory.hazardtype.mnemonic: [
+                            {
+                                'local': hazardset.local,
+                                'id': hazardset.id
+                            }
+                            for hazardset in HcAdAss.hazardsets
+                        ]
+                    for HcAdAss in division.hazardcategories }
+                }
+            } for division, geom_simplified in divisions]
+        }
+
+        root_folder = os.path.join(os.path.dirname(__file__), '..')
+        path = os.path.join(root_folder, 'static', 'data_map.json')
+
+        logger.info('Generating data map')
+        try:
+            with open(path, 'wb') as f:
+                f.write(json.dumps(content))
+        except EnvironmentError:
+            logger.error('Writing data map failed')
 
 
 def clearall_query():

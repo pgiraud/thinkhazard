@@ -86,10 +86,13 @@ import_admindivs: .build/requirements.timestamp \
 		/tmp/thinkhazard/admindiv/$(DATA)/g2015_2014_2.sql
 	.build/venv/bin/import_admindivs $(INI_FILE) folder=/tmp/thinkhazard/admindiv/$(DATA)
 
-/tmp/thinkhazard/admindiv/$(DATA)/%.sql: /tmp/thinkhazard/admindiv/$(DATA)/%.sql.zip
+/tmp/thinkhazard/admindiv/$(DATA)/%.sql: /tmp/thinkhazard/admindiv/$(DATA)/%_upd180117.shp
+	shp2pgsql -s 4326 $< $(notdir $*) > $@
+
+/tmp/thinkhazard/admindiv/$(DATA)/%.shp: /tmp/thinkhazard/admindiv/$(DATA)/%.zip
 	unzip -o $< -d /tmp/thinkhazard/admindiv/$(DATA)
 
-/tmp/thinkhazard/admindiv/$(DATA)/%.sql.zip:
+/tmp/thinkhazard/admindiv/$(DATA)/%_upd180117.zip:
 	mkdir -p $(dir $@)
 	wget -nc "http://dev.camptocamp.com/files/thinkhazard/$(DATA)/$(notdir $@)" -O $@
 

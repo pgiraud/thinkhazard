@@ -93,30 +93,76 @@ DELETE FROM g2015_2014_2 WHERE gid = 1059;
     print "Creating administrative divs"
     trans = connection.begin()
     connection.execute('''
-INSERT INTO datamart.administrativedivision (code, leveltype_id, name,
-parent_code, geom)
-SELECT adm0_code, 1, adm0_name, NULL, geom
-FROM g2015_2014_0;
+WITH new_values (code, leveltype_id, name, parent_code, name_fr, name_sp, geom) AS (
+    SELECT adm0_code, 1, adm0_name, NULL, fre, esp, geom
+    FROM g2015_2014_0
+),
+upsert AS (
+    UPDATE datamart.administrativedivision ad
+    SET name = nv.name,
+        name_fr = nv.name_fr,
+        name_sp = nv.name_sp,
+        geom = nv.geom
+    FROM new_values nv
+    WHERE ad.code = nv.code
+    RETURNING ad.*
+)
+INSERT INTO datamart.administrativedivision (code, leveltype_id, name, name_fr, name_sp, geom)
+SELECT code, leveltype_id, name, name_fr, name_sp, geom
+FROM new_values
+WHERE NOT EXISTS (SELECT 1
+                  FROM upsert up
+                  WHERE up.code = new_values.code);
 SELECT DropGeometryColumn('public', 'g2015_2014_0', 'geom');
 DROP TABLE g2015_2014_0;''')
     trans.commit()
 
     trans = connection.begin()
     connection.execute('''
-INSERT INTO datamart.administrativedivision (code, leveltype_id, name,
-parent_code, geom)
-SELECT adm1_code, 2, adm1_name, adm0_code, geom
-FROM g2015_2014_1;
+WITH new_values (code, leveltype_id, name, parent_code, geom) AS (
+    SELECT adm1_code, 2, adm1_name, adm0_code, geom
+    FROM g2015_2014_1
+),
+upsert AS (
+    UPDATE datamart.administrativedivision ad
+    SET name = nv.name,
+        parent_code = nv.parent_code,
+        geom = nv.geom
+    FROM new_values nv
+    WHERE ad.code = nv.code
+    RETURNING ad.*
+)
+INSERT INTO datamart.administrativedivision (code, leveltype_id, name, parent_code, geom)
+SELECT code, leveltype_id, name, parent_code, geom
+FROM new_values
+WHERE NOT EXISTS (SELECT 1
+                  FROM upsert up
+                  WHERE up.code = new_values.code);
 SELECT DropGeometryColumn('public', 'g2015_2014_1', 'geom');
 DROP TABLE g2015_2014_1;''')
     trans.commit()
 
     trans = connection.begin()
     connection.execute('''
-INSERT INTO datamart.administrativedivision (code, leveltype_id, name,
-parent_code, geom)
-SELECT adm2_code, 3, adm2_name, adm1_code, geom
-FROM g2015_2014_2;
+WITH new_values (code, leveltype_id, name, parent_code, geom) AS (
+    SELECT adm2_code, 3, adm2_name, adm1_code, geom
+    FROM g2015_2014_2
+),
+upsert AS (
+    UPDATE datamart.administrativedivision ad
+    SET name = nv.name,
+        parent_code = nv.parent_code,
+        geom = nv.geom
+    FROM new_values nv
+    WHERE ad.code = nv.code
+    RETURNING ad.*
+)
+INSERT INTO datamart.administrativedivision (code, leveltype_id, name, parent_code, geom)
+SELECT code, leveltype_id, name, parent_code, geom
+FROM new_values
+WHERE NOT EXISTS (SELECT 1
+                  FROM upsert up
+                  WHERE up.code = new_values.code);
 SELECT DropGeometryColumn('public', 'g2015_2014_2', 'geom');
 DROP TABLE g2015_2014_2;
 ''')

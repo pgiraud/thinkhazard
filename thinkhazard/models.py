@@ -264,6 +264,8 @@ class AdministrativeDivision(Base):
     leveltype_id = Column(Integer, ForeignKey(AdminLevelType.id),
                           nullable=False, index=True)
     name = Column(Unicode, nullable=False)
+    name_fr = Column(Unicode)
+    name_sp = Column(Unicode)
     parent_code = Column(Integer, ForeignKey(
         'administrativedivision.code', use_alter=True,
         name='administrativedivision_parent_code_fkey'))

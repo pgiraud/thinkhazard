@@ -11,7 +11,8 @@
   //
   var source = new ol.source.XYZ({
     //url: 'https://{a-c}.tiles.mapbox.com/v4/ingenieroariel.m9a2h374/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiaW5nZW5pZXJvYXJpZWwiLCJhIjoibXhDZ3pIMCJ9.qTmPYCbnUKtaNFkvKKysAQ'
-    url: 'https://api.mapbox.com/styles/v1/fredjacon/cix1ik75a00392qo9osrn9jee/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZnJlZGphY29uIiwiYSI6ImNpeDFqaWRvdTAwMDgyeW1nNzVuNGRoYmYifQ.gPDSQUrKNq7HlgDI5Yp5oQ'
+    //url: 'https://api.mapbox.com/styles/v1/fredjacon/cix1ik75a00392qo9osrn9jee/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZnJlZGphY29uIiwiYSI6ImNpeDFqaWRvdTAwMDgyeW1nNzVuNGRoYmYifQ.gPDSQUrKNq7HlgDI5Yp5oQ'
+    url: 'https://api.mapbox.com/styles/v1/gsdpm/cir6ljf470006bsmehhstmxeh/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ3NkcG0iLCJhIjoiY2lqbmN5eG9mMDBndHVmbTU5Mmg1djF6MiJ9.QqFCD7tcmccysN8GUClW8w'
   });
   waitForTiles();
 
